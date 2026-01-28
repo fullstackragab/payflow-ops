@@ -59,7 +59,7 @@ export function usePayments(params: PaymentListParams = {}) {
       if (params.pageSize) searchParams.set('pageSize', params.pageSize.toString());
       if (params.status) searchParams.set('status', params.status);
 
-      const url = `/api/payments${searchParams.toString() ? `?${searchParams}` : ''}`;
+      const url = `/payments${searchParams.toString() ? `?${searchParams}` : ''}`;
       // Response includes data, freshness, and meta
       return apiClient.get<Payment[]>(url, { signal }) as Promise<ApiResponse<Payment[]> & { meta: PaymentMeta }>;
     },
@@ -76,7 +76,7 @@ export function usePayment(id: string | null) {
     queryKey: paymentKeys.detail(id || ''),
     queryFn: async ({ signal }) => {
       if (!id) throw new Error('Payment ID is required');
-      return apiClient.get<Payment>(`/api/payments/${id}`, { signal });
+      return apiClient.get<Payment>(`/payments/${id}`, { signal });
     },
     enabled: !!id,
     staleTime: 5000,
@@ -103,7 +103,7 @@ export function useCreatePayment() {
     }) => {
       const idempotencyKey = generateIdempotencyKey();
 
-      return apiClient.post<Payment>('/api/payments', request, {
+      return apiClient.post<Payment>('/payments', request, {
         headers: {
           'Idempotency-Key': idempotencyKey,
         },
@@ -139,7 +139,7 @@ export function useTransitionPayment() {
       failureMessage?: string;
     }) => {
       return apiClient.post<Payment>(
-        `/api/payments/${paymentId}/transition`,
+        `/payments/${paymentId}/transition`,
         {
           targetStatus,
           expectedVersion,
@@ -165,7 +165,7 @@ export function useSubmitPayment() {
 
   return useMutation({
     mutationFn: async (paymentId: string) => {
-      return apiClient.post<Payment>(`/api/payments/${paymentId}/submit`, {});
+      return apiClient.post<Payment>(`/payments/${paymentId}/submit`, {});
     },
     onSuccess: (_, paymentId) => {
       queryClient.invalidateQueries({ queryKey: paymentKeys.lists() });
@@ -182,7 +182,7 @@ export function useCancelPayment() {
 
   return useMutation({
     mutationFn: async (paymentId: string) => {
-      return apiClient.post<Payment>(`/api/payments/${paymentId}/cancel`, {});
+      return apiClient.post<Payment>(`/payments/${paymentId}/cancel`, {});
     },
     onSuccess: (_, paymentId) => {
       queryClient.invalidateQueries({ queryKey: paymentKeys.lists() });
@@ -210,7 +210,7 @@ export function useSimulatePayment() {
       failureMessage?: string;
     }) => {
       return apiClient.post<Payment>(
-        `/api/payments/${paymentId}/simulate`,
+        `/payments/${paymentId}/simulate`,
         {
           outcome,
           failureCode,

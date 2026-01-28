@@ -62,7 +62,7 @@ export function usePayouts(params: PayoutListParams = {}) {
       if (params.status) searchParams.set('status', params.status);
       if (params.needsAttention) searchParams.set('needsAttention', 'true');
 
-      const url = `/api/payouts${searchParams.toString() ? `?${searchParams}` : ''}`;
+      const url = `/payouts${searchParams.toString() ? `?${searchParams}` : ''}`;
       return apiClient.get<PayoutBatch[]>(url, { signal }) as Promise<
         ApiResponse<PayoutBatch[]> & { summary: PayoutSummary }
       >;
@@ -80,7 +80,7 @@ export function usePayout(id: string | null) {
     queryKey: payoutKeys.detail(id || ''),
     queryFn: async ({ signal }) => {
       if (!id) throw new Error('Payout ID is required');
-      return apiClient.get<PayoutBatch>(`/api/payouts/${id}`, { signal }) as Promise<
+      return apiClient.get<PayoutBatch>(`/payouts/${id}`, { signal }) as Promise<
         ApiResponse<PayoutBatch> & { countdown: SettlementCountdown }
       >;
     },
@@ -113,7 +113,7 @@ export function useReconcilePayout() {
       notes: string;
       settledAmount?: number;
     }) => {
-      return apiClient.post<PayoutBatch>(`/api/payouts/${payoutId}/reconcile`, {
+      return apiClient.post<PayoutBatch>(`/payouts/${payoutId}/reconcile`, {
         resolvedStatus,
         notes,
         settledAmount,
@@ -140,7 +140,7 @@ export function useSimulatePayout() {
       payoutId: string;
       outcome: 'progress' | 'settle' | 'partial_fail' | 'fail' | 'delay' | 'need_recon';
     }) => {
-      return apiClient.post<PayoutBatch>(`/api/payouts/${payoutId}/simulate`, {
+      return apiClient.post<PayoutBatch>(`/payouts/${payoutId}/simulate`, {
         outcome,
       });
     },
