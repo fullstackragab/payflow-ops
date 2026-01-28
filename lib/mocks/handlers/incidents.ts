@@ -178,7 +178,7 @@ async function applyChaos(url: string): Promise<Response | null> {
 
 export const incidentHandlers = [
   // GET /api/incidents - List incidents with optional status filter
-  http.get('/api/incidents', async ({ request }) => {
+  http.get('*/api/incidents', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -210,7 +210,7 @@ export const incidentHandlers = [
   }),
 
   // GET /api/incidents/:id - Get single incident with full timeline
-  http.get('/api/incidents/:id', async ({ request, params }) => {
+  http.get('*/api/incidents/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 

@@ -72,7 +72,7 @@ function createResponse<T>(data: T): ApiResponse<T> {
 
 export const metricsHandlers = [
   // GET /api/metrics - Dashboard metrics
-  http.get('/api/metrics', async ({ request }) => {
+  http.get('*/api/metrics', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -81,7 +81,7 @@ export const metricsHandlers = [
   }),
 
   // GET /api/metrics/regions - Regional breakdown
-  http.get('/api/metrics/regions', async ({ request }) => {
+  http.get('*/api/metrics/regions', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -90,7 +90,7 @@ export const metricsHandlers = [
   }),
 
   // GET /api/incidents - Active incidents
-  http.get('/api/incidents', async ({ request }) => {
+  http.get('*/api/incidents', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -116,7 +116,7 @@ export const metricsHandlers = [
   }),
 
   // GET /api/incidents/:id
-  http.get('/api/incidents/:id', async ({ request, params }) => {
+  http.get('*/api/incidents/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 

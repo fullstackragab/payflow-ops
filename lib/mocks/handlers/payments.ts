@@ -146,7 +146,7 @@ export const paymentHandlers = [
   /**
    * GET /api/payments - List payments
    */
-  http.get('/api/payments', async ({ request }) => {
+  http.get('*/api/payments', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -182,7 +182,7 @@ export const paymentHandlers = [
   /**
    * GET /api/payments/:id - Get single payment with full details
    */
-  http.get('/api/payments/:id', async ({ request, params }) => {
+  http.get('*/api/payments/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -212,7 +212,7 @@ export const paymentHandlers = [
    * - Same key + different request = 422 Conflict
    * - Missing key = 400 Bad Request
    */
-  http.post('/api/payments', async ({ request }) => {
+  http.post('*/api/payments', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -325,7 +325,7 @@ export const paymentHandlers = [
    * Idempotency: Transition requests are idempotent within a short window.
    * If the payment is already in the target state, return success.
    */
-  http.post('/api/payments/:id/transition', async ({ request, params }) => {
+  http.post('*/api/payments/:id/transition', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -440,7 +440,7 @@ export const paymentHandlers = [
    * This is sugar for transitioning from draft to submitted.
    * In production, this would also trigger the actual processor call.
    */
-  http.post('/api/payments/:id/submit', async ({ request, params }) => {
+  http.post('*/api/payments/:id/submit', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -491,7 +491,7 @@ export const paymentHandlers = [
    *
    * Only allowed from certain states (draft, submitted, requires_action).
    */
-  http.post('/api/payments/:id/cancel', async ({ request, params }) => {
+  http.post('*/api/payments/:id/cancel', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -545,7 +545,7 @@ export const paymentHandlers = [
    * This endpoint allows the demo to simulate various processor outcomes.
    * Not present in production - processor results come via webhooks.
    */
-  http.post('/api/payments/:id/simulate', async ({ request, params }) => {
+  http.post('*/api/payments/:id/simulate', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 

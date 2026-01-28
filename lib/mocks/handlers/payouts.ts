@@ -320,7 +320,7 @@ export const payoutHandlers = [
   /**
    * GET /api/payouts - List payout batches
    */
-  http.get('/api/payouts', async ({ request }) => {
+  http.get('*/api/payouts', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -370,7 +370,7 @@ export const payoutHandlers = [
   /**
    * GET /api/payouts/:id - Get single payout batch with details
    */
-  http.get('/api/payouts/:id', async ({ request, params }) => {
+  http.get('*/api/payouts/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -403,7 +403,7 @@ export const payoutHandlers = [
    * This is the manual reconciliation endpoint. Operators use this after
    * verifying settlement status with the bank.
    */
-  http.post('/api/payouts/:id/reconcile', async ({ request, params }) => {
+  http.post('*/api/payouts/:id/reconcile', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -471,7 +471,7 @@ export const payoutHandlers = [
   /**
    * POST /api/payouts/:id/simulate - Simulate settlement progress (demo only)
    */
-  http.post('/api/payouts/:id/simulate', async ({ request, params }) => {
+  http.post('*/api/payouts/:id/simulate', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 

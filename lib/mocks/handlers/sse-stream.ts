@@ -48,7 +48,8 @@ export function triggerEventBurst(count: number): void {
 
 export const sseStreamHandlers = [
   // GET /api/transactions/stream - SSE endpoint
-  http.get('/api/transactions/stream', ({ request }) => {
+  // Use wildcard to match both relative and absolute URLs in production
+  http.get('*/api/transactions/stream', ({ request }) => {
     const chaos = getChaosConfig();
 
     // Check for chaos-induced outage
@@ -143,7 +144,7 @@ export const sseStreamHandlers = [
   }),
 
   // POST /api/transactions/stream/burst - Trigger event burst (for testing)
-  http.post('/api/transactions/stream/burst', async ({ request }) => {
+  http.post('*/api/transactions/stream/burst', async ({ request }) => {
     const body = (await request.json()) as { count?: number };
     const count = body.count || 50;
 
@@ -175,11 +176,11 @@ export const sseStreamHandlers = [
   }),
 
   // GET /api/transactions/stream/rate - Get/set event rate
-  http.get('/api/transactions/stream/rate', () => {
+  http.get('*/api/transactions/stream/rate', () => {
     return HttpResponse.json({ rate: eventRatePerSecond });
   }),
 
-  http.post('/api/transactions/stream/rate', async ({ request }) => {
+  http.post('*/api/transactions/stream/rate', async ({ request }) => {
     const body = (await request.json()) as { rate?: number };
     if (body.rate) {
       setEventRate(body.rate);

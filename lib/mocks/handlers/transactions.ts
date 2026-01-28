@@ -92,7 +92,7 @@ function createResponse<T>(data: T, isStale = false): ApiResponse<T> {
 
 export const transactionHandlers = [
   // GET /api/transactions - List transactions
-  http.get('/api/transactions', async ({ request }) => {
+  http.get('*/api/transactions', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -121,7 +121,7 @@ export const transactionHandlers = [
   }),
 
   // GET /api/transactions/:id - Get single transaction
-  http.get('/api/transactions/:id', async ({ request, params }) => {
+  http.get('*/api/transactions/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -145,7 +145,7 @@ export const transactionHandlers = [
   }),
 
   // PATCH /api/transactions/:id - Update transaction status
-  http.patch('/api/transactions/:id', async ({ request, params }) => {
+  http.patch('*/api/transactions/:id', async ({ request, params }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
@@ -175,7 +175,7 @@ export const transactionHandlers = [
   }),
 
   // POST /api/transactions - Create transaction (for testing)
-  http.post('/api/transactions', async ({ request }) => {
+  http.post('*/api/transactions', async ({ request }) => {
     const chaosResponse = await applyChaos(request.url);
     if (chaosResponse) return chaosResponse;
 
