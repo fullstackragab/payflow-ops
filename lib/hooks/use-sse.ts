@@ -114,9 +114,8 @@ export function useSSE<T>({
 
       eventSource.onmessage = (event) => {
         try {
-          const parsed = JSON.parse(event.data);
-          const sequence = parsed.sequence as number;
-          const data = parsed.data as T;
+          const parsed = JSON.parse(event.data) as T & { sequence?: number };
+          const sequence = (parsed as Record<string, unknown>).sequence as number ?? 0;
 
           // Detect missed events via sequence gap
           if (lastSequenceRef.current !== null && sequence > lastSequenceRef.current + 1) {
@@ -134,7 +133,7 @@ export function useSSE<T>({
             lastEventAt: new Date().toISOString(),
           }));
 
-          onMessageRef.current(data, sequence);
+          onMessageRef.current(parsed, sequence);
         } catch (e) {
           console.error('[SSE] Failed to parse event:', e);
         }
