@@ -18,13 +18,17 @@ export function MSWProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function initMSW() {
-      // Only initialize in development
-      if (process.env.NODE_ENV !== 'development') {
+      // Initialize in development or when explicitly enabled for demo deployments
+      const shouldMock =
+        process.env.NODE_ENV === 'development' ||
+        process.env.NEXT_PUBLIC_ENABLE_MOCKS === 'true';
+
+      if (!shouldMock) {
         setIsReady(true);
         return;
       }
 
-      // Dynamic import to avoid bundling MSW in production
+      // Dynamic import MSW
       const { startMockServiceWorker } = await import('@/lib/mocks/browser');
       await startMockServiceWorker();
       setIsReady(true);
