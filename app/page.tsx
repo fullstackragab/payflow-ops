@@ -47,6 +47,13 @@ import {
 import { formatCompactCurrency } from '@/lib/utils/currency';
 import type { Incident } from '@/lib/types';
 
+// Regional health status type
+type RegionHealth = {
+  region: string;
+  status: 'operational' | 'degraded' | 'down';
+  issue?: string;
+};
+
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState('24h');
   const [region, setRegion] = useState('all');
@@ -58,6 +65,20 @@ export default function DashboardPage() {
   // Track which KPIs are erroring for degraded mode detection
   const [volumeError, setVolumeError] = useState(false);
   const [latencyError, setLatencyError] = useState(false);
+
+  // Regional health - in production, this would come from a health check API
+  // For now, all regions are healthy. Change this to test degraded states.
+  const regionalHealth: RegionHealth[] = useMemo(() => [
+    { region: 'US', status: 'operational' },
+    { region: 'EU', status: 'operational' },
+    { region: 'UK', status: 'operational' },
+    { region: 'APAC', status: 'operational' },
+    { region: 'LATAM', status: 'operational' },
+    { region: 'MEA', status: 'operational' },
+  ], []);
+
+  const degradedRegions = regionalHealth.filter(r => r.status !== 'operational');
+  const allRegionsHealthy = degradedRegions.length === 0;
 
   // Fetch incidents
   const {
@@ -100,8 +121,8 @@ export default function DashboardPage() {
     : new Date().toISOString();
 
   return (
-    <div className="space-y-4">
-      {/* Connection status for offline detection */}
+    <div className="flex flex-col gap-6">
+      {/* Alert Plane - only shown when there are issues */}
       {connectionState === 'offline' && (
         <DegradedModeBanner
           reason="offline"
@@ -129,13 +150,14 @@ export default function DashboardPage() {
         />
       ))}
 
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-xl text-gray-900 dark:text-gray-100">
+      {/* Global Context Band - thin, calm, full-width */}
+      <div className="flex flex-col gap-3 border-b border-gray-100 pb-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
+        {/* Left: Title and status indicators */}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <h1 className="text-lg font-medium text-gray-900 dark:text-gray-100">
             Operations Dashboard
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex items-center gap-4">
             <ConnectionStatus />
             <LastUpdatedIndicator
               timestamp={lastUpdated}
@@ -143,12 +165,30 @@ export default function DashboardPage() {
               isRefreshing={incidentsFetching}
             />
           </div>
+          {/* Regional Health Summary - sentence, not grid */}
+          <div className="flex items-center gap-1.5 text-xs">
+            {allRegionsHealthy ? (
+              // Healthy state: boring, fades into background
+              <span className="text-gray-400 dark:text-gray-500">
+                All regions operational
+              </span>
+            ) : (
+              // Degraded state: demands attention
+              <span className="text-yellow-600 dark:text-yellow-500">
+                <span className="font-medium">
+                  {degradedRegions.map(r => r.region).join(' · ')}
+                </span>
+                {' '}
+                {degradedRegions.length === 1 ? 'degraded' : 'degraded'}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col gap-3 sm:flex-row shrink-0">
+        {/* Right: Filters */}
+        <div className="flex gap-2 shrink-0">
           <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger className="w-full bg-white dark:bg-gray-900 sm:w-32">
+            <SelectTrigger className="h-8 w-28 text-xs bg-white dark:bg-gray-900">
               <SelectValue placeholder="Region" />
             </SelectTrigger>
             <SelectContent>
@@ -161,12 +201,12 @@ export default function DashboardPage() {
           </Select>
 
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-full bg-white dark:bg-gray-900 sm:w-32">
+            <SelectTrigger className="h-8 w-28 text-xs bg-white dark:bg-gray-900">
               <SelectValue placeholder="Time range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1h">Last 1 hour</SelectItem>
-              <SelectItem value="24h">Last 24 hours</SelectItem>
+              <SelectItem value="1h">Last hour</SelectItem>
+              <SelectItem value="24h">Last 24h</SelectItem>
               <SelectItem value="7d">Last 7 days</SelectItem>
               <SelectItem value="30d">Last 30 days</SelectItem>
             </SelectContent>
@@ -243,26 +283,6 @@ export default function DashboardPage() {
           changeLabel="vs target"
           refetchInterval={10000}
         />
-      </div>
-
-      {/* Regional summary - placeholder for now */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-          Regional Status
-        </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {['US', 'EU', 'UK', 'APAC', 'LATAM', 'MEA'].map((r) => (
-            <div
-              key={r}
-              className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-800 dark:bg-gray-800/50"
-            >
-              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                {r}
-              </span>
-              <span className="h-2 w-2 rounded-full bg-green-500" />
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

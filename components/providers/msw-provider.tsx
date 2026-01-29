@@ -28,9 +28,15 @@ export function MSWProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Dynamic import MSW
-      const { startMockServiceWorker } = await import('@/lib/mocks/browser');
-      await startMockServiceWorker();
+      try {
+        // Dynamic import MSW
+        const { startMockServiceWorker } = await import('@/lib/mocks/browser');
+        await startMockServiceWorker();
+      } catch (error) {
+        // MSW failed to start - continue without it
+        // Next.js API routes will handle requests as fallback
+        console.warn('[MSW] Failed to start, falling back to API routes:', error);
+      }
       setIsReady(true);
     }
 
