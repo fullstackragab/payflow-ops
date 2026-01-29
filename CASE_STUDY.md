@@ -55,8 +55,8 @@ This project shows:
 - I think about operators, not just users
 - I know when to stop building and start documenting trade-offs
 
-The code is at [repository link]. The demo takes 5 minutes. The architecture is explained in the README.
+The code is at [https://github.com/fullstackragab/payflow-ops](https://github.com/fullstackragab/payflow-ops). The demo takes 5 minutes. The architecture is explained in the README.
 
 ---
 
-*Built as a staff-level engineering portfolio piece. Not production code — a demonstration of how I think about systems.*
+_Built as a staff-level engineering portfolio piece. Not production code — a demonstration of how I think about systems._
